@@ -1,16 +1,16 @@
-# CRUD-Gen — генератор CRUD кода для Go
+# CRUD-Gen - генератор CRUD кода для Go
 
 **CRUD-Gen** - это инструмент командной строки, который автоматически генерирует типобезопасный код для работы с базами данных на основе структур Go. Поддерживает PostgreSQL, позволяет использовать кастомные шаблоны и работает как через CLI, так и через HTTP API.
 
 ## Возможности
 
-- **AST парсинг** — анализирует структуры Go на уровне синтаксического дерева
-- **Автоматическая генерация CRUD** — Create, Read (Get), Update, Delete, List операции
-- **PostgreSQL** — параметризованные запросы с `RETURNING` и защитой от SQL injection
-- **Кастомные шаблоны** — переопределите генерацию под ваши нужды
-- **CLI и HTTP API** — используйте как команду или как микросервис
-- **Типобезопасность** — параметризованные запросы, защита от SQL injection
-- **Автогенерация тестов** — базовый набор unit тестов с флагом `--with-tests`
+- **AST парсинг** - анализирует структуры Go на уровне синтаксического дерева
+- **Автоматическая генерация CRUD** - Create, Read (Get), Update, Delete, List операции
+- **PostgreSQL** - параметризованные запросы с `RETURNING` и защитой от SQL injection
+- **Кастомные шаблоны** - переопределите генерацию под ваши нужды
+- **CLI и HTTP API** - используйте как команду или как микросервис
+- **Типобезопасность** - параметризованные запросы, защита от SQL injection
+- **Автогенерация тестов** - базовый набор unit тестов с флагом `--with-tests`
 
 ## Быстрый старт
 
@@ -58,7 +58,7 @@ type User struct {
   --package=repo
 ```
 
-Результат — файл `repositories/user_repo.go` с интерфейсом и реализацией:
+Результат - файл `repositories/user_repo.go` с интерфейсом и реализацией:
 
 ```go
 type UserRepository interface {
@@ -98,10 +98,10 @@ type UserRepository interface {
 
 | Флаг | Описание | Обязателен | По умолчанию |
 |------|---------|-----------|--------------|
-| `--model` | Название структуры для генерации (например, User) | Да | — |
-| `--input` | Путь к файлу с структурой (например, ./models/user.go) | Да | — |
+| `--model` | Название структуры для генерации (например, User) | Да | - |
+| `--input` | Путь к файлу с структурой (например, ./models/user.go) | Да | - |
 | `--output` | Путь для сохранения сгенерированного кода | Нет | stdout |
-| `--package` | Имя пакета для сгенерированного кода | Да | — |
+| `--package` | Имя пакета для сгенерированного кода | Да | - |
 | `--id-field` | Название поля первичного ключа | Нет | ID |
 | `--dialect` | SQL диалект: postgres | Нет | postgres |
 | `--with-tests` | Генерировать unit тесты | Нет | false |
@@ -185,11 +185,11 @@ curl http://localhost:8080/health
 - Unit тестов
 
 Поддерживает переменные:
-- `{{.SelectColumns}}` — SELECT список
-- `{{.InsertColumns}}` — INSERT колонки
-- `{{.SetClause}}` — UPDATE SET
-- `{{.TableName}}` — таблица БД
-- `{{.ModelRef}}` — ссылка на модель
+- `{{.SelectColumns}}` - SELECT список
+- `{{.InsertColumns}}` - INSERT колонки
+- `{{.SetClause}}` - UPDATE SET
+- `{{.TableName}}` - таблица БД
+- `{{.ModelRef}}` - ссылка на модель
 
 ### 4. Main (`main.go`)
 
@@ -394,11 +394,11 @@ docker-compose down
 
 Генератор проверяет:
 
-1. **Обязательные флаги** — `--model`, `--input`, `--package`
-2. **Существование файла** — файл с моделью должен существовать
-3. **Наличие структуры** — структура должна быть найдена в файле
-4. **Диалект SQL** — postgres
-5. **Синтаксис шаблонов** — если задан кастомный шаблон
+1. **Обязательные флаги** - `--model`, `--input`, `--package`
+2. **Существование файла** - файл с моделью должен существовать
+3. **Наличие структуры** - структура должна быть найдена в файле
+4. **Диалект SQL** - postgres
+5. **Синтаксис шаблонов** - если задан кастомный шаблон
 
 Примеры ошибок:
 ```
@@ -409,11 +409,11 @@ error: unknown dialect "oracle": must be postgres
 
 ## Ограничения
 
-1. **Один первичный ключ** — поддерживается только один ID field
-2. **Простые типы** — базовые Go типы (int, string, bool, time.Time, float64, и т.д.)
-3. **Плоские структуры** — вложенные структуры не поддерживаются
-4. **Исключение полей** — только через `json:"-"` tag
-5. **PostgreSQL по умолчанию** — если не указан `--dialect`
+1. **Один первичный ключ** - поддерживается только один ID field
+2. **Простые типы** - базовые Go типы (int, string, bool, time.Time, float64, и т.д.)
+3. **Плоские структуры** - вложенные структуры не поддерживаются
+4. **Исключение полей** - только через `json:"-"` tag
+5. **PostgreSQL по умолчанию** - если не указан `--dialect`
 
 ## Структура проекта
 
@@ -457,7 +457,7 @@ crud-gen/
 
 ### Поле не генерируется в SQL
 
-Проверьте struct tag — если `json:"-"`, поле исключится:
+Проверьте struct tag - если `json:"-"`, поле исключится:
 ```go
 type User struct {
     Password string `json:"-"` // не будет в CRUD
@@ -502,19 +502,19 @@ MIT License
 
 ---
 
-# CRUD-Gen — CRUD code generator for Go
+# CRUD-Gen - CRUD code generator for Go
 
 **CRUD-Gen** is a command-line tool that automatically generates type-safe database code based on Go structures. Supports PostgreSQL, allows custom templates and works both via CLI and HTTP API.
 
 ## Features
 
-- **AST parsing** — analyzes Go structures at the syntax tree level
-- **Automatic CRUD generation** — Create, Read (Get), Update, Delete, List operations
-- **PostgreSQL** — parameterized queries with `RETURNING` and SQL injection protection
-- **Custom templates** — override generation for your needs
-- **CLI and HTTP API** — use as a command or as a microservice
-- **Type safety** — parameterized queries, SQL injection protection
-- **Auto-generated tests** — basic unit tests with `--with-tests` flag
+- **AST parsing** - analyzes Go structures at the syntax tree level
+- **Automatic CRUD generation** - Create, Read (Get), Update, Delete, List operations
+- **PostgreSQL** - parameterized queries with `RETURNING` and SQL injection protection
+- **Custom templates** - override generation for your needs
+- **CLI and HTTP API** - use as a command or as a microservice
+- **Type safety** - parameterized queries, SQL injection protection
+- **Auto-generated tests** - basic unit tests with `--with-tests` flag
 
 ## Quick Start
 
@@ -561,7 +561,7 @@ Generation:
   --package=repo
 ```
 
-Result — file `repositories/user_repo.go` with interface and implementation:
+Result - file `repositories/user_repo.go` with interface and implementation:
 
 ```go
 type UserRepository interface {
@@ -601,10 +601,10 @@ Creates `user_repo.go` and `user_repo_test.go` with ready-made tests.
 
 | Flag | Description | Required | Default |
 |------|-------------|----------|---------|
-| `--model` | Struct name for generation (e.g., User) | Yes | — |
-| `--input` | Path to file with struct (e.g., ./models/user.go) | Yes | — |
+| `--model` | Struct name for generation (e.g., User) | Yes | - |
+| `--input` | Path to file with struct (e.g., ./models/user.go) | Yes | - |
 | `--output` | Path to save generated code | No | stdout |
-| `--package` | Package name for generated code | Yes | — |
+| `--package` | Package name for generated code | Yes | - |
 | `--id-field` | Primary key field name | No | ID |
 | `--dialect` | SQL dialect: postgres | No | postgres |
 | `--with-tests` | Generate unit tests | No | false |
@@ -688,11 +688,11 @@ Built-in Go templates for:
 - Unit tests
 
 Supports variables:
-- `{{.SelectColumns}}` — SELECT list
-- `{{.InsertColumns}}` — INSERT columns
-- `{{.SetClause}}` — UPDATE SET
-- `{{.TableName}}` — database table
-- `{{.ModelRef}}` — model reference
+- `{{.SelectColumns}}` - SELECT list
+- `{{.InsertColumns}}` - INSERT columns
+- `{{.SetClause}}` - UPDATE SET
+- `{{.TableName}}` - database table
+- `{{.ModelRef}}` - model reference
 
 ### 4. Main (`main.go`)
 
@@ -897,11 +897,11 @@ docker-compose down
 
 Generator checks:
 
-1. **Required flags** — `--model`, `--input`, `--package`
-2. **File existence** — model file must exist
-3. **Struct presence** — struct must be found in file
-4. **SQL dialect** — postgres
-5. **Template syntax** — if custom template is provided
+1. **Required flags** - `--model`, `--input`, `--package`
+2. **File existence** - model file must exist
+3. **Struct presence** - struct must be found in file
+4. **SQL dialect** - postgres
+5. **Template syntax** - if custom template is provided
 
 Error examples:
 ```
@@ -912,11 +912,11 @@ error: unknown dialect "oracle": must be postgres
 
 ## Limitations
 
-1. **Single primary key** — only one ID field is supported
-2. **Simple types** — basic Go types (int, string, bool, time.Time, float64, etc.)
-3. **Flat structures** — nested structures are not supported
-4. **Field exclusion** — only via `json:"-"` tag
-5. **PostgreSQL by default** — if `--dialect` is not specified
+1. **Single primary key** - only one ID field is supported
+2. **Simple types** - basic Go types (int, string, bool, time.Time, float64, etc.)
+3. **Flat structures** - nested structures are not supported
+4. **Field exclusion** - only via `json:"-"` tag
+5. **PostgreSQL by default** - if `--dialect` is not specified
 
 ## Project Structure
 
@@ -960,7 +960,7 @@ Make sure struct name matches the `--model` flag:
 
 ### Field not generated in SQL
 
-Check struct tag — if `json:"-"`, field is excluded:
+Check struct tag - if `json:"-"`, field is excluded:
 ```go
 type User struct {
     Password string `json:"-"` // won't be in CRUD
