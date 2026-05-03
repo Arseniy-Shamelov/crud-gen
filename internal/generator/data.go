@@ -13,8 +13,6 @@ type Dialect string
 
 const (
 	DialectPostgres Dialect = "postgres"
-	DialectMySQL    Dialect = "mysql"
-	DialectSQLite   Dialect = "sqlite"
 )
 
 // Config holds code-generation parameters supplied by the caller (CLI or HTTP).
@@ -25,7 +23,7 @@ type Config struct {
 	WithTests        bool
 	ModelRef         string // "User" (same pkg) or "models.User" (cross-pkg)
 	ModelImport      string // "" or full import path e.g. "mymod/models"
-	Dialect          string // "postgres" (default), "mysql", "sqlite"
+	Dialect          string // "postgres" (default)
 	RepoTemplatePath string // "" → use built-in
 	TestTemplatePath string // "" → use built-in
 }
@@ -108,20 +106,9 @@ func BuildTemplateData(cfg *Config) *TemplateData {
 	updArgs[len(insertFields)] = "id"
 
 	whereParam := len(insertFields) + 1
-	var singleParam, updateWhere, driverImport string
-	if useReturning {
-		singleParam = "$1"
-		updateWhere = fmt.Sprintf("$%d", whereParam)
-		driverImport = "github.com/lib/pq"
-	} else {
-		singleParam = "?"
-		updateWhere = "?"
-		if cfg.Dialect == string(DialectMySQL) {
-			driverImport = "github.com/go-sql-driver/mysql"
-		} else {
-			driverImport = "github.com/mattn/go-sqlite3"
-		}
-	}
+	singleParam := "$1"
+	updateWhere := fmt.Sprintf("$%d", whereParam)
+	driverImport := "github.com/lib/pq"
 
 	return &TemplateData{
 		Package:            cfg.Package,

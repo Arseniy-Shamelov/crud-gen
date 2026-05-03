@@ -1,12 +1,12 @@
 # CRUD-Gen — генератор CRUD кода для Go
 
-**CRUD-Gen** — это инструмент командной строки, который автоматически генерирует типобезопасный код для работы с базами данных на основе структур Go. Поддерживает PostgreSQL, MySQL и SQLite, позволяет использовать кастомные шаблоны и работает как через CLI, так и через HTTP API.
+**CRUD-Gen** - это инструмент командной строки, который автоматически генерирует типобезопасный код для работы с базами данных на основе структур Go. Поддерживает PostgreSQL, позволяет использовать кастомные шаблоны и работает как через CLI, так и через HTTP API.
 
 ## Возможности
 
 - **AST парсинг** — анализирует структуры Go на уровне синтаксического дерева
 - **Автоматическая генерация CRUD** — Create, Read (Get), Update, Delete, List операции
-- **Поддержка 3 СУБД** — PostgreSQL, MySQL, SQLite с автоматической адаптацией синтаксиса SQL
+- **PostgreSQL** — параметризованные запросы с `RETURNING` и защитой от SQL injection
 - **Кастомные шаблоны** — переопределите генерацию под ваши нужды
 - **CLI и HTTP API** — используйте как команду или как микросервис
 - **Типобезопасность** — параметризованные запросы, защита от SQL injection
@@ -83,20 +83,7 @@ type UserRepository interface {
 
 Создаст `user_repo.go` и `user_repo_test.go` с готовыми тестами.
 
-### Пример 3: Генерация для MySQL
-
-```bash
-./crud-gen \
-  --model=Product \
-  --input=./models/product.go \
-  --output=./repositories/product_repo.go \
-  --package=repo \
-  --dialect=mysql
-```
-
-Генератор автоматически использует MySQL синтаксис (например, `LAST_INSERT_ID()` вместо `RETURNING`).
-
-### Пример 4: Использование кастомного шаблона
+### Пример 3: Использование кастомного шаблона
 
 ```bash
 ./crud-gen \
@@ -116,7 +103,7 @@ type UserRepository interface {
 | `--output` | Путь для сохранения сгенерированного кода | Нет | stdout |
 | `--package` | Имя пакета для сгенерированного кода | Да | — |
 | `--id-field` | Название поля первичного ключа | Нет | ID |
-| `--dialect` | SQL диалект: postgres, mysql, sqlite | Нет | postgres |
+| `--dialect` | SQL диалект: postgres | Нет | postgres |
 | `--with-tests` | Генерировать unit тесты | Нет | false |
 | `--repo-template` | Путь к кастомному шаблону репозитория | Нет | встроенный |
 | `--test-template` | Путь к кастомному шаблону тестов | Нет | встроенный |
@@ -235,7 +222,7 @@ done
 generate:
 	@echo "Generating CRUD repositories..."
 	./crud-gen --model=User --input=./models/user.go --output=./repositories/user_repo.go --package=repo
-	./crud-gen --model=Product --input=./models/product.go --output=./repositories/product_repo.go --package=repo --dialect=mysql
+	./crud-gen --model=Product --input=./models/product.go --output=./repositories/product_repo.go --package=repo
 	./crud-gen --model=Post --input=./models/post.go --output=./repositories/post_repo.go --package=repo
 	@echo "Done!"
 ```
@@ -394,20 +381,6 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: testpass
-      MYSQL_DATABASE: testdb
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./init-mysql.sql:/docker-entrypoint-initdb.d/init.sql
-
-  sqlite:
-    image: sqlite
-    volumes:
-      - ./test.db:/data/test.db
 ```
 
 Запуск:
@@ -424,14 +397,14 @@ docker-compose down
 1. **Обязательные флаги** — `--model`, `--input`, `--package`
 2. **Существование файла** — файл с моделью должен существовать
 3. **Наличие структуры** — структура должна быть найдена в файле
-4. **Диалект SQL** — postgres, mysql или sqlite
+4. **Диалект SQL** — postgres
 5. **Синтаксис шаблонов** — если задан кастомный шаблон
 
 Примеры ошибок:
 ```
 error: required flags missing: --model, --input, --package
 error: struct "User" not found in ./models/user.go
-error: unknown dialect "oracle": must be postgres, mysql, or sqlite
+error: unknown dialect "oracle": must be postgres
 ```
 
 ## Ограничения
@@ -492,17 +465,6 @@ type User struct {
 }
 ```
 
-### SQL синтаксис не совпадает с БД
-
-Убедитесь, что используете правильный диалект:
-```bash
-# для MySQL
-./crud-gen --model=User --input=./models/user.go --dialect=mysql
-
-# для SQLite
-./crud-gen --model=User --input=./models/user.go --dialect=sqlite
-```
-
 ### Тесты требуют переменную окружения
 
 Установите `TEST_DB_URL`:
@@ -542,13 +504,13 @@ MIT License
 
 # CRUD-Gen — CRUD code generator for Go
 
-**CRUD-Gen** is a command-line tool that automatically generates type-safe database code based on Go structures. Supports PostgreSQL, MySQL and SQLite, allows custom templates and works both via CLI and HTTP API.
+**CRUD-Gen** is a command-line tool that automatically generates type-safe database code based on Go structures. Supports PostgreSQL, allows custom templates and works both via CLI and HTTP API.
 
 ## Features
 
 - **AST parsing** — analyzes Go structures at the syntax tree level
 - **Automatic CRUD generation** — Create, Read (Get), Update, Delete, List operations
-- **3 database support** — PostgreSQL, MySQL, SQLite with automatic SQL syntax adaptation
+- **PostgreSQL** — parameterized queries with `RETURNING` and SQL injection protection
 - **Custom templates** — override generation for your needs
 - **CLI and HTTP API** — use as a command or as a microservice
 - **Type safety** — parameterized queries, SQL injection protection
@@ -624,20 +586,7 @@ type UserRepository interface {
 
 Creates `user_repo.go` and `user_repo_test.go` with ready-made tests.
 
-### Example 3: Generation for MySQL
-
-```bash
-./crud-gen \
-  --model=Product \
-  --input=./models/product.go \
-  --output=./repositories/product_repo.go \
-  --package=repo \
-  --dialect=mysql
-```
-
-Generator automatically uses MySQL syntax (e.g., `LAST_INSERT_ID()` instead of `RETURNING`).
-
-### Example 4: Using custom template
+### Example 3: Using custom template
 
 ```bash
 ./crud-gen \
@@ -657,7 +606,7 @@ Generator automatically uses MySQL syntax (e.g., `LAST_INSERT_ID()` instead of `
 | `--output` | Path to save generated code | No | stdout |
 | `--package` | Package name for generated code | Yes | — |
 | `--id-field` | Primary key field name | No | ID |
-| `--dialect` | SQL dialect: postgres, mysql, sqlite | No | postgres |
+| `--dialect` | SQL dialect: postgres | No | postgres |
 | `--with-tests` | Generate unit tests | No | false |
 | `--repo-template` | Path to custom repository template | No | built-in |
 | `--test-template` | Path to custom test template | No | built-in |
@@ -776,7 +725,7 @@ done
 generate:
 	@echo "Generating CRUD repositories..."
 	./crud-gen --model=User --input=./models/user.go --output=./repositories/user_repo.go --package=repo
-	./crud-gen --model=Product --input=./models/product.go --output=./repositories/product_repo.go --package=repo --dialect=mysql
+	./crud-gen --model=Product --input=./models/product.go --output=./repositories/product_repo.go --package=repo
 	./crud-gen --model=Post --input=./models/post.go --output=./repositories/post_repo.go --package=repo
 	@echo "Done!"
 ```
@@ -935,20 +884,6 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: testpass
-      MYSQL_DATABASE: testdb
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./init-mysql.sql:/docker-entrypoint-initdb.d/init.sql
-
-  sqlite:
-    image: sqlite
-    volumes:
-      - ./test.db:/data/test.db
 ```
 
 Run:
@@ -965,14 +900,14 @@ Generator checks:
 1. **Required flags** — `--model`, `--input`, `--package`
 2. **File existence** — model file must exist
 3. **Struct presence** — struct must be found in file
-4. **SQL dialect** — postgres, mysql or sqlite
+4. **SQL dialect** — postgres
 5. **Template syntax** — if custom template is provided
 
 Error examples:
 ```
 error: required flags missing: --model, --input, --package
 error: struct "User" not found in ./models/user.go
-error: unknown dialect "oracle": must be postgres, mysql, or sqlite
+error: unknown dialect "oracle": must be postgres
 ```
 
 ## Limitations
@@ -1031,17 +966,6 @@ type User struct {
     Password string `json:"-"` // won't be in CRUD
     Email    string `json:"email"` // will be in CRUD
 }
-```
-
-### SQL syntax doesn't match database
-
-Make sure you use correct dialect:
-```bash
-# for MySQL
-./crud-gen --model=User --input=./models/user.go --dialect=mysql
-
-# for SQLite
-./crud-gen --model=User --input=./models/user.go --dialect=sqlite
 ```
 
 ### Tests require environment variable

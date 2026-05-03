@@ -36,7 +36,7 @@ func main() {
 	fPkg := flag.String("package", "", "package name for generated code")
 	fIDField := flag.String("id-field", "ID", "name of the primary-key field")
 	fWithTests  := flag.Bool("with-tests", false, "also generate _test.go")
-	fDialect    := flag.String("dialect", "postgres", "SQL dialect: postgres, mysql, sqlite")
+	fDialect    := flag.String("dialect", "postgres", "SQL dialect: postgres")
 	fRepoTmpl   := flag.String("repo-template", "", "path to custom repository template file")
 	fTestTmpl   := flag.String("test-template", "", "path to custom test template file")
 	fServe      := flag.Bool("serve", false, "start HTTP server instead of CLI generation")
@@ -254,10 +254,10 @@ func generateHandler(w http.ResponseWriter, r *http.Request) {
 
 func validateDialect(d string) error {
 	switch d {
-	case "", "postgres", "mysql", "sqlite":
+	case "", "postgres":
 		return nil
 	}
-	return fmt.Errorf("unknown dialect %q: must be postgres, mysql, or sqlite", d)
+	return fmt.Errorf("unknown dialect %q: must be postgres", d)
 }
 
 // validateHTTPPaths rejects absolute paths and path traversal attempts.
